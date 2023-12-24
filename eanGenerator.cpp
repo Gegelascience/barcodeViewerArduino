@@ -50,15 +50,55 @@ EanGenerator::EanGenerator(int screenWidth, int screenHeight) {
 
 void EanGenerator::setupDisplay(uint8_t switchvcc = SSD1306_SWITCHCAPVCC, uint8_t i2caddr = 0) {
   screenDriver.begin(switchvcc, i2caddr);
+
+  Serial.println("tada");
+
+  /*screenDriver.clearDisplay();
+  screenDriver.drawLine(0,0,90, 30, WHITE);
+  screenDriver.display();
+  delay(2000);*/
+
+  Serial.println("truc");
 }
 
 void EanGenerator::showBarcode(char ean[]){
   String eanStr = String(ean);
+  String barcode = calculateBarcode(eanStr);
+
+  Serial.println("show");
+  //Serial.println(barcode);
 
   screenDriver.clearDisplay();
-  screenDriver.drawLine(5,0,5, 30, WHITE);
+
+  /*for (unsigned int i=0;i<barcode.length();i++){
+    Serial.println("coucou");
+    if (int(barcode[i]) == 1) {
+      screenDriver.drawLine(i,15,i, 40, WHITE);
+    } else {
+      screenDriver.drawLine(i,15,i, 40, BLACK);
+    }
+  }*/
+
+  screenDriver.setTextSize(1);      // Normal 1:1 pixel scale
+  screenDriver.setTextColor(SSD1306_WHITE); // Draw white text
+  screenDriver.setCursor(0, 0);     // Start at top-left corner
+  screenDriver.cp437(true);         // Use full 256 char 'Code Page 437' font
+
+  for(int16_t i=0; i<eanStr.length(); i++) {
+    screenDriver.write(eanStr[i]);
+  }
+
+  /*screenDriver.setCursor(0, 50);
+  for(int16_t j=0; j<barcode.length(); j++) {
+    Serial.println(barcode[j]);
+    screenDriver.write(barcode[j]);
+  }*/
+
+
   screenDriver.display();
-  delay(2000);
+
+
+  //delay(2000);
 
 }
 
@@ -117,6 +157,7 @@ String EanGenerator::calculateBarcode(String ean) {
     barcode.concat("101");
 
   }
+  Serial.println(barcode);
 
   return barcode;
 
