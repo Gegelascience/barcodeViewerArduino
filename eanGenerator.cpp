@@ -30,7 +30,7 @@ void EanGenerator::showBarcode(String ean){
     screenDriver.write(ean[i]);
   }
 
-  screenDriver.drawLine(0,20,0, 40, WHITE);
+ 
 
   for (unsigned int i=0;i<barcode.length();i++){
     if (int(barcode[i]) == '1') {
@@ -40,17 +40,8 @@ void EanGenerator::showBarcode(String ean){
     }
   }
   
-
-  /*screenDriver.clearDisplay();
-  screenDriver.setCursor(0, 20);
-  for(int16_t j=0; j<barcode.length(); j++) {
-    screenDriver.write(barcode[j]);
-  }*/
-
   screenDriver.display();
 
-
-  //
 
 }
 

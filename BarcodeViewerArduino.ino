@@ -21,11 +21,18 @@ void setup() {
   Serial.begin(9600);
   test.setupDisplay(SWITCHCAPVCC, OLED_ADDR);
   
-  Serial.println(String(isCorrectEan(String("3666154117284"))).c_str());
+  //Serial.println(String(isCorrectEan(String("3666154117284"))).c_str());
+
+  if (isCorrectEan(F("3666154117284"))) {
+    test.showBarcode(F("3666154117284"));
+    Serial.println(F("Success"));
+  } else {
+    Serial.println(F("Bad EAN"));
+  }
   
-  test.showBarcode(String("3666154117284"));
+  
   //test.setExemple();
-  Serial.println(F("Success"));
+  
 
 }
 
