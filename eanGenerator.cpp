@@ -2,8 +2,9 @@
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_GFX.h>
 #include <Arduino.h>
+#include <avr/pgmspace.h>
 
-char *setA[] = {
+const char *setA[] = {
   "0001101",
   "0011001",
   "0010011",
@@ -16,31 +17,9 @@ char *setA[] = {
   "0001011"
 };
 
-char *setB[] = {
-  "0100111",
-  "0110011",
-  "0011011",
-  "0100001",
-  "0011101",
-  "0111001",
-  "0000101",
-  "0010001",
-  "0001001",
-  "0010111"
-};
 
-char *setC[] = {
-  "1110010",
-  "1100110",
-  "1101100",
-  "1000010",
-  "1011100",
-  "1001110",
-  "1010000",
-  "1000100",
-  "1001000",
-  "1110100"
-};
+
+
 
 
 EanGenerator::EanGenerator(int screenWidth, int screenHeight) {
@@ -51,22 +30,12 @@ EanGenerator::EanGenerator(int screenWidth, int screenHeight) {
 void EanGenerator::setupDisplay(uint8_t switchvcc = SSD1306_SWITCHCAPVCC, uint8_t i2caddr = 0) {
   screenDriver.begin(switchvcc, i2caddr);
 
-  Serial.println("tada");
-
-  /*screenDriver.clearDisplay();
-  screenDriver.drawLine(0,0,90, 30, WHITE);
-  screenDriver.display();
-  delay(2000);*/
-
-  Serial.println("truc");
 }
 
-void EanGenerator::showBarcode(char ean[]){
-  String eanStr = String(ean);
-  String barcode = calculateBarcode(eanStr);
+void EanGenerator::showBarcode(String ean){
+  String barcode = calculateBarcode(ean);
 
-  Serial.println("show");
-  //Serial.println(barcode);
+  //Serial.println(ean);
 
   screenDriver.clearDisplay();
 
@@ -84,16 +53,17 @@ void EanGenerator::showBarcode(char ean[]){
   screenDriver.setCursor(0, 0);     // Start at top-left corner
   screenDriver.cp437(true);         // Use full 256 char 'Code Page 437' font
 
-  for(int16_t i=0; i<eanStr.length(); i++) {
-    screenDriver.write(eanStr[i]);
+  for(int16_t i=0; i<ean.length(); i++) {
+    screenDriver.write(ean[i]);
   }
 
-  /*screenDriver.setCursor(0, 50);
+  screenDriver.setCursor(0, 50);
   for(int16_t j=0; j<barcode.length(); j++) {
-    Serial.println(barcode[j]);
     screenDriver.write(barcode[j]);
-  }*/
-
+  }
+  Serial.println(F("show 2"));
+  Serial.println(ean);
+  Serial.println(ean.length());
 
   screenDriver.display();
 
@@ -102,27 +72,43 @@ void EanGenerator::showBarcode(char ean[]){
 
 }
 
-String EanGenerator::barcodeString(char ean[]) {
-  String eanStr = String(ean);
-  return calculateBarcode(eanStr);
-}
 
 String EanGenerator::calculateBarcode(String ean) {
   String barcode = String("101");
-  unsigned int lenEan = ean.length();
 
-  if(lenEan == 13) {
+  if(ean.length() == 13) {
     String firstPart = ean.substring(1,7);
     String secondPart = ean.substring(7);
     long prefix = ean.substring(0,1).toInt();
+    
 
     for (unsigned int i=0;i<firstPart.length();i++){
-      unsigned int indexSet = firstPart.substring(i,i+1).toInt();
-      char setToApply = gettingSet(i,prefix);
-      if( setToApply == 'A') {
-        barcode.concat(setA[indexSet]);
+      if( gettingSet(i,prefix) == 'A') {
+        barcode.concat(setA[firstPart.substring(i,i+1).toInt()]);
       } else {
-        barcode.concat(setB[indexSet]);
+
+        if (firstPart.substring(i,i+1) == "0") {
+          barcode.concat(F("0100111"));
+        } else if (firstPart.substring(i,i+1) == "1") {
+          barcode.concat(F("0110011"));
+        } else if (firstPart.substring(i,i+1) == "2") {
+          barcode.concat(F("0011011"));
+        } else if (firstPart.substring(i,i+1) == "3") {
+          barcode.concat(F("0100001"));
+        } else if (firstPart.substring(i,i+1) == "4") {
+          barcode.concat(F("0011101"));
+        } else if (firstPart.substring(i,i+1) == "5") {
+          barcode.concat(F("0111001"));
+        } else if (firstPart.substring(i,i+1) == "6") {
+          barcode.concat(F("0000101"));
+        } else if (firstPart.substring(i,i+1) == "7") {
+          barcode.concat(F("0010001"));
+        } else if (firstPart.substring(i,i+1) == "8") {
+          barcode.concat(F("0001001"));
+        } else if (firstPart.substring(i,i+1) == "9") {
+          barcode.concat(F("0010111"));
+        }
+
       }
       
     }
@@ -130,8 +116,30 @@ String EanGenerator::calculateBarcode(String ean) {
     barcode.concat("01010");
 
     for (unsigned int i=0;i<secondPart.length();i++){
-      unsigned int indexSet = secondPart.substring(i,i+1).toInt();
-      barcode.concat(setC[indexSet]);
+
+
+      if (secondPart.substring(i,i+1) == "0") {
+        barcode.concat(F("1110010"));
+      } else if (secondPart.substring(i,i+1) == "1") {
+        barcode.concat(F("1100110"));
+      } else if (secondPart.substring(i,i+1) == "2") {
+        barcode.concat(F("1101100"));
+      } else if (secondPart.substring(i,i+1) == "3") {
+        barcode.concat(F("1000010"));
+      } else if (secondPart.substring(i,i+1) == "4") {
+        barcode.concat(F("1011100"));
+      } else if (secondPart.substring(i,i+1) == "5") {
+        barcode.concat(F("1001110"));
+      } else if (secondPart.substring(i,i+1) == "6") {
+        barcode.concat(F("1010000"));
+      } else if (secondPart.substring(i,i+1) == "7") {
+        barcode.concat(F("1000100"));
+      } else if (secondPart.substring(i,i+1) == "8") {
+        barcode.concat(F("1001000"));
+      } else if (secondPart.substring(i,i+1) == "9") {
+        barcode.concat(F("1110100"));
+      }
+
     }
 
     barcode.concat("101");
@@ -142,21 +150,40 @@ String EanGenerator::calculateBarcode(String ean) {
     String secondPart = ean.substring(4);
 
     for (unsigned int i=0;i<firstPart.length();i++){
-      unsigned int indexSet = firstPart.substring(i,i+1).toInt();
-      barcode.concat(setA[indexSet]);
+      barcode.concat(setA[firstPart.substring(i,i+1).toInt()]);
     }
 
 
     barcode.concat("01010");
 
     for (unsigned int i=0;i<secondPart.length();i++){
-      unsigned int indexSet = secondPart.substring(i,i+1).toInt();
-      barcode.concat(setC[indexSet]);
+      if (secondPart.substring(i,i+1) == "0") {
+        barcode.concat(F("1110010"));
+      } else if (secondPart.substring(i,i+1) == "1") {
+        barcode.concat(F("1100110"));
+      } else if (secondPart.substring(i,i+1) == "2") {
+        barcode.concat(F("1101100"));
+      } else if (secondPart.substring(i,i+1) == "3") {
+        barcode.concat(F("1000010"));
+      } else if (secondPart.substring(i,i+1) == "4") {
+        barcode.concat(F("1011100"));
+      } else if (secondPart.substring(i,i+1) == "5") {
+        barcode.concat(F("1001110"));
+      } else if (secondPart.substring(i,i+1) == "6") {
+        barcode.concat(F("1010000"));
+      } else if (secondPart.substring(i,i+1) == "7") {
+        barcode.concat(F("1000100"));
+      } else if (secondPart.substring(i,i+1) == "8") {
+        barcode.concat(F("1001000"));
+      } else if (secondPart.substring(i,i+1) == "9") {
+        barcode.concat(F("1110100"));
+      }
     }
 
     barcode.concat("101");
 
   }
+
   Serial.println(barcode);
 
   return barcode;

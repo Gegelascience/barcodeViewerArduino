@@ -21,15 +21,11 @@ void setup() {
   Serial.begin(9600);
   test.setupDisplay(SWITCHCAPVCC, OLED_ADDR);
   
-  Serial.println("Test");
   Serial.println(String(isCorrectEan(String("3666154117284"))).c_str());
-
-  //Serial.println(test.barcodeString("3666154117284").c_str());
-  Serial.println("ddvwcx");
   
-  test.showBarcode("3666154117284");
+  test.showBarcode(String("3666154117284"));
   //test.setExemple();
-  Serial.println("Success");
+  Serial.println(F("Success"));
 
 }
 

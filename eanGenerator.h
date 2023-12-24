@@ -16,8 +16,7 @@ class EanGenerator {
   public:
   EanGenerator(int screenWidth, int screenHeight);
   void setupDisplay(uint8_t switchvcc = SSD1306_SWITCHCAPVCC, uint8_t i2caddr = 0);
-  void showBarcode(char ean[]);
-  String barcodeString(char ean[]);
+  void showBarcode(String ean);
 
 };
 
