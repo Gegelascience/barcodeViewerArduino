@@ -19,18 +19,7 @@ void EanGenerator::setupDisplay(uint8_t switchvcc = SSD1306_SWITCHCAPVCC, uint8_
 void EanGenerator::showBarcode(String ean){
   String barcode = calculateBarcode(ean);
 
-  //Serial.println(ean);
-
   screenDriver.clearDisplay();
-
-  /*for (unsigned int i=0;i<barcode.length();i++){
-    Serial.println("coucou");
-    if (int(barcode[i]) == 1) {
-      screenDriver.drawLine(i,15,i, 40, WHITE);
-    } else {
-      screenDriver.drawLine(i,15,i, 40, BLACK);
-    }
-  }*/
 
   screenDriver.setTextSize(1);      // Normal 1:1 pixel scale
   screenDriver.setTextColor(SSD1306_WHITE); // Draw white text
@@ -41,18 +30,27 @@ void EanGenerator::showBarcode(String ean){
     screenDriver.write(ean[i]);
   }
 
+  screenDriver.drawLine(0,20,0, 40, WHITE);
+
+  for (unsigned int i=0;i<barcode.length();i++){
+    if (int(barcode[i]) == '1') {
+      screenDriver.drawLine(i,20,i, 40, WHITE);
+    } else {
+      screenDriver.drawLine(i,20,i, 40, BLACK);
+    }
+  }
+  
+
+  /*screenDriver.clearDisplay();
   screenDriver.setCursor(0, 20);
   for(int16_t j=0; j<barcode.length(); j++) {
     screenDriver.write(barcode[j]);
-  }
-  Serial.println(F("show 2"));
-  Serial.println(ean);
-  Serial.println(ean.length());
+  }*/
 
   screenDriver.display();
 
 
-  //delay(2000);
+  //
 
 }
 
