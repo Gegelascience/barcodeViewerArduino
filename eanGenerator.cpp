@@ -4,22 +4,6 @@
 #include <Arduino.h>
 #include <avr/pgmspace.h>
 
-const char *setA[] = {
-  "0001101",
-  "0011001",
-  "0010011",
-  "0111101",
-  "0100011",
-  "0110001",
-  "0101111",
-  "0111011",
-  "0110111",
-  "0001011"
-};
-
-
-
-
 
 
 EanGenerator::EanGenerator(int screenWidth, int screenHeight) {
@@ -57,7 +41,7 @@ void EanGenerator::showBarcode(String ean){
     screenDriver.write(ean[i]);
   }
 
-  screenDriver.setCursor(0, 50);
+  screenDriver.setCursor(0, 20);
   for(int16_t j=0; j<barcode.length(); j++) {
     screenDriver.write(barcode[j]);
   }
@@ -84,7 +68,31 @@ String EanGenerator::calculateBarcode(String ean) {
 
     for (unsigned int i=0;i<firstPart.length();i++){
       if( gettingSet(i,prefix) == 'A') {
-        barcode.concat(setA[firstPart.substring(i,i+1).toInt()]);
+
+        if (firstPart.substring(i,i+1) == "0") {
+          barcode.concat(F("0001101"));
+        } else if (firstPart.substring(i,i+1) == "1") {
+          barcode.concat(F("0011001"));
+        } else if (firstPart.substring(i,i+1) == "2") {
+          barcode.concat(F("0010011"));
+        } else if (firstPart.substring(i,i+1) == "3") {
+          barcode.concat(F("0111101"));
+        } else if (firstPart.substring(i,i+1) == "4") {
+          barcode.concat(F("0100011"));
+        } else if (firstPart.substring(i,i+1) == "5") {
+          barcode.concat(F("0110001"));
+        } else if (firstPart.substring(i,i+1) == "6") {
+          barcode.concat(F("0101111"));
+        } else if (firstPart.substring(i,i+1) == "7") {
+          barcode.concat(F("0111011"));
+        } else if (firstPart.substring(i,i+1) == "8") {
+          barcode.concat(F("0110111"));
+        } else if (firstPart.substring(i,i+1) == "9") {
+          barcode.concat(F("0001011"));
+        }
+
+
+
       } else {
 
         if (firstPart.substring(i,i+1) == "0") {
@@ -150,7 +158,27 @@ String EanGenerator::calculateBarcode(String ean) {
     String secondPart = ean.substring(4);
 
     for (unsigned int i=0;i<firstPart.length();i++){
-      barcode.concat(setA[firstPart.substring(i,i+1).toInt()]);
+      if (firstPart.substring(i,i+1) == "0") {
+          barcode.concat(F("0001101"));
+        } else if (firstPart.substring(i,i+1) == "1") {
+          barcode.concat(F("0011001"));
+        } else if (firstPart.substring(i,i+1) == "2") {
+          barcode.concat(F("0010011"));
+        } else if (firstPart.substring(i,i+1) == "3") {
+          barcode.concat(F("0111101"));
+        } else if (firstPart.substring(i,i+1) == "4") {
+          barcode.concat(F("0100011"));
+        } else if (firstPart.substring(i,i+1) == "5") {
+          barcode.concat(F("0110001"));
+        } else if (firstPart.substring(i,i+1) == "6") {
+          barcode.concat(F("0101111"));
+        } else if (firstPart.substring(i,i+1) == "7") {
+          barcode.concat(F("0111011"));
+        } else if (firstPart.substring(i,i+1) == "8") {
+          barcode.concat(F("0110111"));
+        } else if (firstPart.substring(i,i+1) == "9") {
+          barcode.concat(F("0001011"));
+        }
     }
 
 
@@ -183,8 +211,6 @@ String EanGenerator::calculateBarcode(String ean) {
     barcode.concat("101");
 
   }
-
-  Serial.println(barcode);
 
   return barcode;
 
