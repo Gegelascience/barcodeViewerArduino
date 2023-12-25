@@ -52,11 +52,10 @@ String EanGenerator::calculateBarcode(String ean) {
   if(ean.length() == 13) {
     String firstPart = ean.substring(1,7);
     String secondPart = ean.substring(7);
-    long prefix = ean.substring(0,1).toInt();
     
 
     for (unsigned int i=0;i<firstPart.length();i++){
-      if( gettingSet(i,prefix) == 'A') {
+      if( gettingSet(i,ean.substring(0,1).toInt()) == 'A') {
 
         if (firstPart.substring(i,i+1) == "0") {
           barcode.concat(F("0001101"));
